@@ -134,8 +134,23 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-image:
+      linear-gradient(90deg, rgb(31 58 46 / 0.035) 1px, transparent 1px),
+      linear-gradient(0deg, rgb(31 58 46 / 0.025) 1px, transparent 1px),
+      linear-gradient(135deg, transparent 0 46%, rgb(224 140 60 / 0.07) 46% 48%, transparent 48% 100%);
+    background-position:
+      center top,
+      center top,
+      center top;
+    background-size:
+      32px 32px,
+      32px 32px,
+      180px 180px;
   }
   html {
     @apply font-sans;
+  }
+  ::selection {
+    @apply bg-cp-amber text-cp-pine;
   }
 }

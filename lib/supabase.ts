@@ -16,6 +16,8 @@ const publicEnvValues: PublicEnvValues = {
   NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
 };
 
+let browserSupabaseClient: SupabaseClient<Database> | null = null;
+
 export class PublicEnvError extends Error {
   constructor(message: string) {
     super(message);
@@ -47,7 +49,7 @@ const readSupabaseUrl = (): string => {
   return url;
 };
 
-export const createSupabaseBrowserClient = (): SupabaseClient<Database> => {
+const createConfiguredSupabaseClient = (): SupabaseClient<Database> => {
   const supabaseUrl = readSupabaseUrl();
   const supabasePublishableKey = readRequiredPublicEnv(
     "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
@@ -60,4 +62,13 @@ export const createSupabaseBrowserClient = (): SupabaseClient<Database> => {
       persistSession: true,
     },
   });
+};
+
+export const createSupabaseBrowserClient = (): SupabaseClient<Database> => {
+  if (browserSupabaseClient !== null) {
+    return browserSupabaseClient;
+  }
+
+  browserSupabaseClient = createConfiguredSupabaseClient();
+  return browserSupabaseClient;
 };

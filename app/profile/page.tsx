@@ -236,7 +236,7 @@ export default function ProfilePage() {
         qrCode={state.data.profile.qr_code}
       />
 
-      <section className="space-y-5 rounded-lg border border-cp-khaki bg-card p-6">
+      <section className="space-y-5 rounded-lg border border-cp-khaki border-l-4 border-l-cp-moss bg-card p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="font-mono text-xs font-medium uppercase tracking-normal text-cp-moss">
@@ -275,7 +275,7 @@ export default function ProfilePage() {
         ) : null}
 
         <dl className="grid gap-3">
-          <div className="rounded-lg border border-cp-khaki bg-background p-4">
+          <div className="rounded-lg border border-cp-khaki bg-background/80 p-4">
             <dt className="text-xs font-semibold uppercase tracking-normal text-muted-foreground">
               Nama
             </dt>
@@ -283,7 +283,7 @@ export default function ProfilePage() {
               {state.data.profile.full_name}
             </dd>
           </div>
-          <div className="rounded-lg border border-cp-khaki bg-background p-4">
+          <div className="rounded-lg border border-cp-khaki bg-background/80 p-4">
             <dt className="text-xs font-semibold uppercase tracking-normal text-muted-foreground">
               Gereja
             </dt>
@@ -291,7 +291,7 @@ export default function ProfilePage() {
               {churchName === null ? "Belum diisi" : churchName}
             </dd>
           </div>
-          <div className="rounded-lg border border-cp-khaki bg-background p-4">
+          <div className="rounded-lg border border-cp-khaki bg-background/80 p-4">
             <dt className="text-xs font-semibold uppercase tracking-normal text-muted-foreground">
               Kelompok
             </dt>
@@ -303,7 +303,7 @@ export default function ProfilePage() {
           </div>
         </dl>
 
-        <section className="rounded-lg border border-cp-khaki bg-background p-4">
+        <section className="rounded-lg border border-cp-khaki bg-background/80 p-4">
           <h2 className="text-xs font-semibold uppercase tracking-normal text-muted-foreground">
             Social Media
           </h2>

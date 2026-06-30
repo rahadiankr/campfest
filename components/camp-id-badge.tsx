@@ -74,13 +74,14 @@ export function CampIdBadge({
   const initials = getInitials(fullName);
 
   return (
-    <section className="relative overflow-hidden rounded-lg border-2 border-dashed border-cp-amber bg-card px-5 pb-5 pt-8 text-cp-pine">
-      <div className="absolute left-1/2 top-3 h-3 w-14 -translate-x-1/2 rounded-full border border-cp-khaki bg-background" />
+    <section className="relative overflow-hidden rounded-lg border-2 border-dashed border-cp-amber bg-card px-5 pb-5 pt-10 text-cp-pine">
+      <div className="absolute inset-x-0 top-0 h-2 bg-cp-amber" />
+      <div className="absolute left-1/2 top-4 h-3 w-14 -translate-x-1/2 rounded-full border border-cp-khaki bg-background" />
 
       <div className="flex flex-col items-center gap-4 text-center">
         <div
           aria-label={hasAvatar ? `${fullName} avatar` : undefined}
-          className="flex size-24 items-center justify-center rounded-full border-4 border-cp-khaki bg-cp-moss bg-cover bg-center font-heading text-4xl leading-none tracking-normal text-card"
+          className="flex size-24 items-center justify-center rounded-full border-4 border-cp-amber bg-cp-moss bg-cover bg-center font-heading text-4xl leading-none tracking-normal text-card"
           style={avatarStyle}
         >
           {hasAvatar ? null : initials}

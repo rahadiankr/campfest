@@ -301,23 +301,31 @@ function HomeContent({
 
   return (
     <div className="mx-auto grid w-full max-w-5xl gap-5 px-5 py-8">
-      <section className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <p className="font-mono text-xs font-medium uppercase tracking-normal text-cp-moss">
-            {data.eventSettings.event_name}
-          </p>
-          <h1 className="mt-1 font-heading text-5xl leading-none tracking-normal text-cp-pine sm:text-6xl">
-            Halo, {data.profileData.profile.full_name}!
-          </h1>
+      <section className="relative overflow-hidden border-b border-cp-khaki/80 pb-6">
+        <div className="absolute right-0 top-0 hidden font-heading text-8xl leading-none tracking-normal text-cp-pine/[0.04] sm:block">
+          CMP
         </div>
+        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="max-w-3xl">
+            <p className="inline-flex rounded-full border border-cp-moss/25 bg-cp-moss/10 px-3 py-1 font-mono text-xs font-semibold uppercase tracking-normal text-cp-moss">
+              {data.eventSettings.event_name}
+            </p>
+            <h1 className="mt-3 font-heading text-6xl leading-none tracking-normal text-cp-pine sm:text-7xl">
+              Halo, {data.profileData.profile.full_name}!
+            </h1>
+            <p className="mt-3 max-w-xl text-sm font-medium leading-6 text-muted-foreground">
+              Satu jalur, satu lencana, satu cerita.
+            </p>
+          </div>
 
-        <div
-          className="inline-flex min-h-10 w-fit items-center rounded-full border border-cp-khaki bg-card px-4 py-2 text-sm font-semibold text-cp-pine"
-          style={getGroupBadgeStyle(groupColor)}
-        >
-          <span className={groupColor === null ? "" : "text-white"}>
-            {group === null ? "Kelompok belum tersedia" : group.name}
-          </span>
+          <div
+            className="inline-flex min-h-11 w-fit items-center rounded-lg border border-cp-khaki bg-card px-4 py-2 font-mono text-xs font-bold uppercase tracking-normal text-cp-pine"
+            style={getGroupBadgeStyle(groupColor)}
+          >
+            <span className={groupColor === null ? "" : "text-white"}>
+              {group === null ? "Kelompok belum tersedia" : group.name}
+            </span>
+          </div>
         </div>
       </section>
 
@@ -368,7 +376,7 @@ function HomeContent({
       </section>
 
       {data.devotional === null ? null : (
-        <section className="rounded-lg border border-cp-khaki bg-card p-5">
+        <section className="rounded-lg border border-cp-khaki border-l-4 border-l-cp-amber bg-card p-5">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="font-mono text-xs font-medium uppercase tracking-normal text-cp-moss">
@@ -380,7 +388,7 @@ function HomeContent({
             </div>
             <Button
               asChild
-              className="h-10 rounded-lg border-cp-moss"
+              className="h-10 rounded-lg border-cp-moss bg-background"
               variant="outline"
             >
               <Link href="/bacaan/renungan">Baca</Link>
@@ -453,23 +461,38 @@ function ShortcutCard({
   const isDisabled = disabledReason !== null || href === null;
   const iconClassName = tone === "highlight" ? "text-cp-amber" : "text-cp-moss";
   const cardClassName = cn(
-    "group flex min-h-32 flex-col justify-between rounded-lg bg-card p-4 transition-colors",
+    "group relative flex min-h-36 flex-col justify-between overflow-hidden rounded-lg bg-card p-4 transition-all",
     tone === "highlight"
-      ? "border-2 border-cp-amber"
-      : "border border-cp-khaki",
+      ? "border-2 border-cp-amber bg-cp-amber/10"
+      : "border border-cp-khaki bg-card",
     isDisabled
       ? "cursor-not-allowed opacity-60"
-      : "hover:border-cp-moss hover:bg-white",
+      : "hover:-translate-y-0.5 hover:border-cp-moss hover:bg-white",
   );
   const content = (
     <>
-      <HugeiconsIcon
-        className={iconClassName}
-        icon={icon}
-        size={28}
-        strokeWidth={1.8}
+      <span
+        className={cn(
+          "absolute inset-x-0 top-0 h-1",
+          tone === "highlight" ? "bg-cp-amber" : "bg-cp-moss/25",
+        )}
       />
-      <div className="space-y-1">
+      <span
+        className={cn(
+          "flex size-12 items-center justify-center rounded-lg border",
+          tone === "highlight"
+            ? "border-cp-amber/45 bg-white/70"
+            : "border-cp-moss/15 bg-cp-moss/10",
+        )}
+      >
+        <HugeiconsIcon
+          className={iconClassName}
+          icon={icon}
+          size={28}
+          strokeWidth={1.8}
+        />
+      </span>
+      <div className="space-y-1 pt-5">
         <h2 className="text-base font-semibold text-cp-pine">{label}</h2>
         <p className="text-xs leading-5 text-muted-foreground">
           {disabledReason ?? description}
@@ -508,7 +531,7 @@ function CommitteeContactCard({
 }) {
   return (
     <section
-      className="rounded-lg border border-cp-khaki bg-card p-5"
+      className="rounded-lg border border-cp-khaki border-l-4 border-l-cp-moss bg-card p-5"
       id="kontak-panitia"
     >
       <div className="space-y-1">
@@ -529,7 +552,7 @@ function CommitteeContactCard({
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           {contacts.map((contact) => (
             <div
-              className="rounded-lg border border-cp-khaki bg-background p-4"
+              className="rounded-lg border border-cp-khaki bg-background/80 p-4 transition-colors hover:border-cp-moss/40"
               key={`${contact.label}-${contact.phone}`}
             >
               <div className="flex items-start gap-3">
@@ -574,40 +597,55 @@ function CountdownCard({
   const metricLabel = getCountdownMetricLabel(countdown);
 
   return (
-    <section className="flex min-h-64 flex-col justify-between rounded-lg bg-cp-pine p-6 text-white">
-      <div className="space-y-2">
-        <p className="font-mono text-xs font-medium uppercase tracking-normal text-cp-khaki">
-          Countdown
-        </p>
-        <h2 className="text-xl font-semibold">{eventName}</h2>
+    <section className="relative flex min-h-72 overflow-hidden rounded-lg border border-cp-pine bg-cp-pine p-6 text-white">
+      <div className="absolute left-6 top-0 h-5 w-16 rounded-b-lg bg-cp-khaki/35" />
+      <div className="absolute right-5 top-5 hidden rounded-lg border border-cp-khaki/35 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-normal text-cp-khaki sm:block">
+        Trailmark
       </div>
 
-      <div>
-        <div className="flex flex-wrap items-end gap-x-3 gap-y-1">
-          <span
-            className={cn(
-              "font-heading text-7xl leading-none tracking-normal text-cp-amber",
-              countdown.tone === "complete" || countdown.tone === "unconfigured"
-                ? "text-5xl"
-                : "sm:text-8xl",
-            )}
-          >
-            {countdown.metric}
-          </span>
-          {metricLabel.length === 0 ? null : (
-            <span className="pb-2 text-sm font-semibold uppercase tracking-normal text-cp-khaki">
-              {metricLabel}
+      <div className="relative flex flex-1 flex-col justify-between">
+        <div className="space-y-2">
+          <p className="font-mono text-xs font-medium uppercase tracking-normal text-cp-khaki">
+            Countdown
+          </p>
+          <h2 className="max-w-[14rem] text-2xl font-semibold leading-tight">
+            {eventName}
+          </h2>
+        </div>
+
+        <div>
+          <div className="flex flex-wrap items-end gap-x-3 gap-y-1">
+            <span
+              className={cn(
+                "font-heading text-8xl leading-none tracking-normal text-cp-amber",
+                countdown.tone === "complete" ||
+                  countdown.tone === "unconfigured"
+                  ? "text-5xl"
+                  : "sm:text-9xl",
+              )}
+            >
+              {countdown.metric}
             </span>
+            {metricLabel.length === 0 ? null : (
+              <span className="pb-3 text-sm font-semibold uppercase tracking-normal text-cp-khaki">
+                {metricLabel}
+              </span>
+            )}
+          </div>
+          <p className="mt-3 max-w-md text-base font-medium leading-7 text-cp-parchment">
+            {countdown.detail}
+          </p>
+          {countdown.tone === "unconfigured" ? (
+            <p className="mt-2 text-xs leading-5 text-cp-khaki">
+              Isi `start_date` dan `end_date` pada row `id = 1`.
+            </p>
+          ) : null}
+          {countdown.tone === "active" ? (
+            <div className="mt-4 h-2 rounded-full bg-cp-amber" />
+          ) : (
+            <div className="mt-4 h-2 rounded-full bg-cp-khaki/35" />
           )}
         </div>
-        <p className="mt-3 text-base font-medium text-cp-parchment">
-          {countdown.detail}
-        </p>
-        {countdown.tone === "unconfigured" ? (
-          <p className="mt-2 text-xs leading-5 text-cp-khaki">
-            Isi `start_date` dan `end_date` pada row `id = 1`.
-          </p>
-        ) : null}
       </div>
     </section>
   );

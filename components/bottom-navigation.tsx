@@ -4,6 +4,7 @@ import {
   BookOpen01Icon,
   Calendar03Icon,
   Home01Icon,
+  UserIcon,
   UserMultipleIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
@@ -66,6 +67,13 @@ const navigationItems: readonly BottomNavigationItem[] = [
     href: "/bacaan/renungan",
     icon: BookOpen01Icon,
     label: "Bacaan",
+    locksWhilePending: false,
+  },
+  {
+    activePrefix: "/profile",
+    href: "/profile",
+    icon: UserIcon,
+    label: "Profile",
     locksWhilePending: false,
   },
 ];
@@ -163,17 +171,17 @@ export function BottomNavigation() {
   }, [loadNavigationState]);
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-cp-khaki bg-card/95 px-3 pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-2 backdrop-blur">
-      <div className="mx-auto grid max-w-md grid-cols-4 gap-1">
+    <nav className="fixed inset-x-0 bottom-0 z-50 px-3 pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-2">
+      <div className="mx-auto grid max-w-lg grid-cols-5 gap-1 rounded-lg border border-cp-khaki bg-card/95 p-1.5 backdrop-blur">
         {navigationItems.map((item) => {
           const isActive = isActivePath(pathname, item.activePrefix);
           const disabledReason = getDisabledReason(item, state);
           const itemClassName = cn(
-            "flex min-h-14 flex-col items-center justify-center gap-1 rounded-lg px-2 text-xs font-medium transition-colors",
+            "flex min-h-14 flex-col items-center justify-center gap-1 rounded-md px-1 text-xs font-semibold transition-colors",
             disabledReason !== null
               ? "cursor-not-allowed text-muted-foreground/60"
               : isActive
-                ? "bg-cp-amber/15 text-cp-amber"
+                ? "bg-cp-pine text-cp-amber"
                 : "text-muted-foreground hover:bg-secondary hover:text-cp-pine",
           );
 
