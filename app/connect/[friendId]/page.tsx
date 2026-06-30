@@ -1,22 +1,20 @@
 "use client";
 
-import { Logout03Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
-import type { SupabaseClient, User } from "@supabase/supabase-js";
+import { use, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import type { SupabaseClient, User } from "@supabase/supabase-js";
 
 import { CampIdBadge } from "@/components/camp-id-badge";
 import { Button } from "@/components/ui/button";
 import type { Database } from "@/lib/database.types";
 import { getErrorMessage } from "@/lib/error-message";
-import { fetchProfilePageData } from "@/lib/profile/profile-data";
+import { fetchFriendProfile } from "@/lib/connect/connect-data";
 import { readSocialMediaLinks } from "@/lib/profile/social-media";
-import type { ProfilePageData, SocialMediaLinks } from "@/lib/profile/types";
+import type { ProfilePageData } from "@/lib/profile/types";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 
-type ProfileState =
+type FriendProfileState =
   | {
       readonly status: "loading";
     }
@@ -27,18 +25,6 @@ type ProfileState =
   | {
       readonly data: ProfilePageData;
       readonly status: "ready";
-    };
-
-type SignOutState =
-  | {
-      readonly status: "idle";
-    }
-  | {
-      readonly status: "submitting";
-    }
-  | {
-      readonly message: string;
-      readonly status: "error";
     };
 
 interface SocialMediaItem {
@@ -62,43 +48,26 @@ const getChurchName = (data: ProfilePageData): string | null => {
 };
 
 const buildSocialMediaItems = (
-  links: SocialMediaLinks,
+  links: ReturnType<typeof readSocialMediaLinks>,
 ): readonly SocialMediaItem[] => {
   const instagram = links.instagram.trim();
   const tiktok = links.tiktok.trim();
 
-  if (instagram.length > 0 && tiktok.length > 0) {
-    return [
-      {
-        label: "Instagram",
-        value: instagram,
-      },
-      {
-        label: "TikTok",
-        value: tiktok,
-      },
-    ];
-  }
-
+  const items: SocialMediaItem[] = [];
   if (instagram.length > 0) {
-    return [
-      {
-        label: "Instagram",
-        value: instagram,
-      },
-    ];
+    items.push({
+      label: "Instagram",
+      value: instagram,
+    });
   }
-
   if (tiktok.length > 0) {
-    return [
-      {
-        label: "TikTok",
-        value: tiktok,
-      },
-    ];
+    items.push({
+      label: "TikTok",
+      value: tiktok,
+    });
   }
 
-  return [];
+  return items;
 };
 
 const getCurrentUser = async (
@@ -117,28 +86,23 @@ const getCurrentUser = async (
   return data.user;
 };
 
-const signOutCurrentUser = async (
-  supabase: SupabaseClient<Database>,
-): Promise<void> => {
-  const { error } = await supabase.auth.signOut();
+interface FriendPageProps {
+  readonly params: Promise<{
+    readonly friendId: string;
+  }>;
+}
 
-  if (error !== null) {
-    throw new Error(`Failed to sign out current user: ${error.message}`);
-  }
-};
-
-export default function ProfilePage() {
+export default function FriendPage({ params }: FriendPageProps) {
   const router = useRouter();
-  const [state, setState] = useState<ProfileState>({ status: "loading" });
-  const [signOutState, setSignOutState] = useState<SignOutState>({
-    status: "idle",
+  const { friendId } = use(params);
+
+  const [state, setState] = useState<FriendProfileState>({
+    status: "loading",
   });
 
-  const loadProfile = useCallback(async (): Promise<void> => {
-    let supabase: SupabaseClient<Database>;
-
+  const loadFriendProfile = useCallback(async (): Promise<void> => {
     try {
-      supabase = createSupabaseBrowserClient();
+      const supabase = createSupabaseBrowserClient();
       const user = await getCurrentUser(supabase);
 
       if (user === null) {
@@ -146,7 +110,9 @@ export default function ProfilePage() {
         return;
       }
 
-      const data = await fetchProfilePageData(supabase, user.id);
+      // Fetch the friend's profile
+      const data = await fetchFriendProfile(supabase, friendId);
+
       setState({
         data,
         status: "ready",
@@ -157,39 +123,24 @@ export default function ProfilePage() {
         status: "error",
       });
     }
-  }, [router]);
+  }, [router, friendId]);
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
-      void loadProfile();
+      void loadFriendProfile();
     }, 0);
 
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [loadProfile]);
-
-  const handleSignOut = useCallback(async (): Promise<void> => {
-    setSignOutState({ status: "submitting" });
-
-    try {
-      const supabase = createSupabaseBrowserClient();
-      await signOutCurrentUser(supabase);
-      router.replace("/login");
-    } catch (error: unknown) {
-      setSignOutState({
-        message: getErrorMessage(error),
-        status: "error",
-      });
-    }
-  }, [router]);
+  }, [loadFriendProfile]);
 
   if (state.status === "loading") {
     return (
       <div className="mx-auto w-full max-w-5xl px-5 py-8">
         <div className="rounded-lg border border-cp-khaki bg-card p-6">
-          <p className="text-sm font-medium text-muted-foreground">
-            Memuat profile...
+          <p className="text-sm font-medium text-muted-foreground animate-pulse">
+            Memuat profil teman...
           </p>
         </div>
       </div>
@@ -202,15 +153,15 @@ export default function ProfilePage() {
         <section className="space-y-4 rounded-lg border border-destructive/30 bg-card p-6">
           <div>
             <h1 className="font-heading text-5xl leading-none tracking-normal text-cp-pine">
-              Profile
+              Profil Teman
             </h1>
             <p className="mt-2 text-sm text-destructive">{state.message}</p>
           </div>
           <Button
-            className="rounded-lg"
+            className="rounded-lg bg-cp-pine text-white hover:bg-cp-pine/95"
             onClick={() => {
               setState({ status: "loading" });
-              void loadProfile();
+              void loadFriendProfile();
             }}
             type="button"
           >
@@ -227,6 +178,7 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto grid w-full max-w-5xl gap-5 px-5 py-8 lg:grid-cols-[minmax(0,24rem)_1fr]">
+      {/* Camp ID Badge (Read-Only) */}
       <CampIdBadge
         avatarUrl={state.data.profile.avatar_url}
         churchName={churchName}
@@ -236,48 +188,29 @@ export default function ProfilePage() {
         qrCode={state.data.profile.qr_code}
       />
 
+      {/* Profile Details */}
       <section className="space-y-5 rounded-lg border border-cp-khaki bg-card p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="font-mono text-xs font-medium uppercase tracking-normal text-cp-moss">
-              Profile Peserta
+              Koneksi Camp
             </p>
             <h1 className="mt-1 font-heading text-5xl leading-none tracking-normal text-cp-pine">
-              Data Saya
+              Profil Teman
             </h1>
           </div>
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <Button
-              asChild
-              className="h-11 rounded-lg bg-cp-amber text-cp-pine hover:bg-cp-amber/90"
-            >
-              <Link href="/profile/edit">Edit Profile</Link>
-            </Button>
-            <Button
-              className="h-11 gap-2 rounded-lg border-destructive/40 bg-transparent text-destructive hover:bg-destructive/10"
-              disabled={signOutState.status === "submitting"}
-              onClick={() => {
-                void handleSignOut();
-              }}
-              type="button"
-              variant="outline"
-            >
-              <HugeiconsIcon icon={Logout03Icon} size={18} strokeWidth={1.8} />
-              {signOutState.status === "submitting" ? "Keluar..." : "Keluar"}
-            </Button>
-          </div>
+          <Button
+            asChild
+            className="h-11 rounded-lg bg-cp-pine hover:bg-cp-pine/90 text-white"
+          >
+            <Link href="/connect">Kembali ke List</Link>
+          </Button>
         </div>
-
-        {signOutState.status === "error" ? (
-          <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-            {signOutState.message}
-          </p>
-        ) : null}
 
         <dl className="grid gap-3">
           <div className="rounded-lg border border-cp-khaki bg-background p-4">
             <dt className="text-xs font-semibold uppercase tracking-normal text-muted-foreground">
-              Nama
+              Nama Lengkap
             </dt>
             <dd className="mt-1 text-base font-semibold text-cp-pine">
               {state.data.profile.full_name}
@@ -285,10 +218,10 @@ export default function ProfilePage() {
           </div>
           <div className="rounded-lg border border-cp-khaki bg-background p-4">
             <dt className="text-xs font-semibold uppercase tracking-normal text-muted-foreground">
-              Gereja
+              Gereja Asal
             </dt>
             <dd className="mt-1 text-base font-semibold text-cp-pine">
-              {churchName === null ? "Belum diisi" : churchName}
+              {churchName === null ? "Gereja belum diisi" : churchName}
             </dd>
           </div>
           <div className="rounded-lg border border-cp-khaki bg-background p-4">
@@ -297,7 +230,7 @@ export default function ProfilePage() {
             </dt>
             <dd className="mt-1 text-base font-semibold text-cp-pine">
               {state.data.group === null
-                ? "Belum tersedia"
+                ? "Kelompok belum tersedia"
                 : state.data.group.name}
             </dd>
           </div>
@@ -308,7 +241,9 @@ export default function ProfilePage() {
             Social Media
           </h2>
           {socialItems.length === 0 ? (
-            <p className="mt-2 text-sm text-muted-foreground">Belum diisi</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Belum mencantumkan social media
+            </p>
           ) : (
             <ul className="mt-2 grid gap-2">
               {socialItems.map((item) => (

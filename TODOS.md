@@ -41,43 +41,43 @@
 
 ## Phase 4 — Informasi Acara
 
-- [ ] Halaman `/event` dengan 3 tab: Rundown / Peraturan / Kontak Panitia
-- [ ] Fetch & render dari tabel `event_info` berdasarkan `type`, urut by `sort_order`
-- [ ] Styling card dengan accent stripe kiri (border-left) per item rundown
+- [x] Halaman `/event` dengan 3 tab: Rundown / Peraturan / Kontak Panitia
+- [x] Fetch & render dari tabel `event_info` berdasarkan `type`, urut by `sort_order`
+- [x] Styling card dengan accent stripe kiri (border-left) per item rundown
 
 ## Phase 5 — Connect
 
-- [ ] Halaman `/connect/scan` — integrasi kamera + library QR scanner
-- [ ] Floating action button (FAB) amber untuk akses cepat ke scanner dari halaman `/connect`
-- [ ] Logic: scan sukses → decode `qr_code` → insert 2 baris ke `friendships` (dua arah)
-- [ ] Toast notifikasi "Berhasil ditambahkan sebagai teman"
-- [ ] Handle edge case: scan QR diri sendiri, scan QR yang sudah jadi teman (cegah duplicate insert)
-- [ ] Halaman `/connect` — list teman (join `friendships` + `profiles` + `churches` + `groups`)
-- [ ] Tampilkan badge kelompok (warna + nama) di tiap row list teman
-- [ ] Search bar filter list teman by nama gereja
-- [ ] Halaman `/connect/[friendId]` — render `CampIdBadge` read-only (tanpa tombol edit)
-- [ ] (Opsional) tombol unfriend di list teman
+- [x] Halaman `/connect/scan` — integrasi kamera + library QR scanner
+- [x] Floating action button (FAB) amber untuk akses cepat ke scanner dari halaman `/connect`
+- [x] Logic: scan sukses → decode `qr_code` → insert 2 baris ke `friendships` (dua arah)
+- [x] Toast notifikasi "Berhasil ditambahkan sebagai teman"
+- [x] Handle edge case: scan QR diri sendiri, scan QR yang sudah jadi teman (cegah duplicate insert)
+- [x] Halaman `/connect` — list teman (join `friendships` + `profiles` + `churches` + `groups`)
+- [x] Tampilkan badge kelompok (warna + nama) di tiap row list teman
+- [x] Search bar filter list teman by nama gereja
+- [x] Halaman `/connect/[friendId]` — render `CampIdBadge` read-only (tanpa tombol edit)
+- [x] (Opsional) tombol unfriend di list teman
 
 ## Phase 6 — Bacaan
 
-- [ ] Halaman `/bacaan/renungan` — list renungan urut tanggal (terbaru di atas)
-- [ ] Detail page renungan — gunakan font serif ringan + line-height lega untuk konten
-- [ ] Halaman `/bacaan/lagu` — list lagu pujian
-- [ ] Detail page lagu — tampilkan lyrics + embed/link YouTube kalau `youtube_url` terisi
+- [x] Halaman `/bacaan/renungan` — list renungan urut tanggal (terbaru di atas)
+- [x] Detail page renungan — gunakan font serif ringan + line-height lega untuk konten
+- [x] Halaman `/bacaan/lagu` — list lagu pujian
+- [x] Detail page lagu — tampilkan lyrics + embed/link YouTube kalau `youtube_url` terisi
 
 ## Phase 7 — Kirim Salam
 
-- [ ] Tambahkan button/link statis ke URL Social Buzz (`target="_blank"`) atau homepage
+- [x] Tambahkan button/link statis ke URL Social Buzz (`target="_blank"`) atau homepage
 
 ## Phase 8 — Polish & QA
 
 - [ ] Responsive check di semua halaman (mobile-first, test di viewport HP)
-- [ ] Loading state di semua fetch data (skeleton/spinner)
-- [ ] Error handling di semua fetch (terutama scan QR & network gagal)
+- [x] Loading state di semua fetch data (skeleton/spinner)
+- [x] Error handling di semua fetch (terutama scan QR & network gagal)
 - [ ] Re-test RLS policies — pastikan user A tidak bisa baca/edit data user B di luar yang diizinkan
 - [ ] Test scan QR di kondisi sinyal lemah — pastikan ada graceful error message
 - [ ] Cek aksesibilitas dasar: kontras warna (amber di atas pine/parchment), ukuran tap target tombol di mobile
-- [ ] Cek konsistensi visual: `CampIdBadge` sama persis antara `/profile` dan `/connect/[friendId]`
+- [x] Cek konsistensi visual: `CampIdBadge` sama persis antara `/profile` dan `/connect/[friendId]`
 
 ## Pre-Launch Checklist (Infra)
 

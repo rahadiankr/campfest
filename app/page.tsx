@@ -6,7 +6,7 @@ import {
   Calendar03Icon,
   ExternalLinkIcon,
   GalleryHorizontalIcon,
-  UserEdit01Icon,
+  UserIcon,
   UserMultipleIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
@@ -82,17 +82,17 @@ const internalShortcuts: readonly ShortcutItem[] = [
     locksWhilePending: true,
   },
   {
+    description: "Lihat ID camp, QR code, dan data peserta.",
+    href: "/profile",
+    icon: UserIcon,
+    label: "Profile",
+    locksWhilePending: false,
+  },
+  {
     description: "Renungan harian dan lagu pujian.",
     href: "/bacaan/renungan",
     icon: BookOpen01Icon,
     label: "Bacaan",
-    locksWhilePending: false,
-  },
-  {
-    description: "Lengkapi nama, gereja, foto, dan social media.",
-    href: "/profile/edit",
-    icon: UserEdit01Icon,
-    label: "Edit Profile",
     locksWhilePending: false,
   },
 ];
